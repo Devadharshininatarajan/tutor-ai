@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>🚀 VoiceBox — Space Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <div id="intro">
+    <div class="spaceship"></div>
+  </div>
+
+  <main class="container hidden">
+    <div class="card">
+      <h1>🚀 VoiceBox</h1>
+      <p class="subtitle">Interstellar Text‑to‑Speech</p>
+      <textarea id="textInput" placeholder="Type something cosmic..."></textarea>
+      
+      <div class="controls">
+        <select id="voiceSelect"></select>
+        <label>Rate: <input id="rate" type="range" min="0.5" max="2" step="0.1" value="1"></label>
+        <label>Pitch: <input id="pitch" type="range" min="0.5" max="2" step="0.1" value="1"></label>
+      </div>
+      
+      <div class="buttons">
+        <button id="speakBtn">🔊 Speak</button>
+        <button id="stopBtn">⏹ Stop</button>
+        <button id="clearBtn">✖ Clear</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
