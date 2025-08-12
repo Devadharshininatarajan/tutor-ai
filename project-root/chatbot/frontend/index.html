@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Chatbot</title>    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>PDF Chatbot</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 2em; }
+            #chat { border: 1px solid #ccc; padding: 1em; height: 300px; overflow-y: auto; }
+            #user-input { width: 80%; }
+            #status { margin-bottom: 1em; color: green; }
+            #error { margin-bottom: 1em; color: red; }
+        </style>
+    </head>
+    <body>
+        <h2>PDF Chatbot</h2>
+        <div id="status"></div>
+        <div id="error"></div>
+        <form id="upload-form">
+            <input type="file" id="pdf-file" accept="application/pdf" required>
+            <button type="submit">Upload PDF</button>
+        </form>
+        <div id="chat"></div>
+        <input type="text" id="user-input" placeholder="Ask something about the PDF...">
+        <button onclick="sendMessage()">Send</button>
+    
+        <script>
+            const chatDiv = document.getElementById('chat');
+            const statusDiv = document.getElementById('status');
+            const errorDiv = document.getElementById('error');
+    
+            document.getElementById('upload-form').onsubmit = async (e) => {
+                e.preventDefault();
+                statusDiv.textContent = '';
+                errorDiv.textContent = '';
+                const fileInput = document.getElementById('pdf-file');
+                if (!fileInput.files.length) {
+                    errorDiv.textContent = 'Please select a PDF file.';
+                    return;
+                }
+                const formData = new FormData();
+                formData.append('pdf', fileInput.files[0]);
+                try {
+                    const res = await fetch('http://127.0.0.1:5000/upload', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (res.ok) {
+                        statusDiv.textContent = data.message || 'PDF uploaded successfully!';
+                        chatDiv.innerHTML += `<div><b>System:</b> ${data.message}</div>`;
+                    } else {
+                        errorDiv.textContent = data.error || 'Upload failed.';
+                    }
+                } catch (err) {
+                    errorDiv.textContent = 'Could not connect to backend.';
+                }
+            };
+    
+            async function sendMessage() {
+                statusDiv.textContent = '';
+                errorDiv.textContent = '';
+                const input = document.getElementById('user-input');
+                const message = input.value.trim();
+                if (!message) return;
+                chatDiv.innerHTML += `<div><b>You:</b> ${message}</div>`;
+                input.value = '';
+                try {
+                    const res = await fetch('http://127.0.0.1:5000/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message })
+                    });
+                    const data = await res.json();
+                    chatDiv.innerHTML += `<div><b>Bot:</b> ${data.response}</div>`;
+                    chatDiv.scrollTop = chatDiv.scrollHeight;
+                } catch (err) {
+                    errorDiv.textContent = 'Could not connect to backend.';
+                }
+            }
+        </script>
+    </body>
+    </html>    <script>
+    (function() {
+        const chatDiv = document.getElementById('chat');
+        const statusDiv = document.getElementById('status');
+        const errorDiv = document.getElementById('error');
+    
+        document.getElementById('upload-form').onsubmit = async (e) => {
+            e.preventDefault();
+            statusDiv.textContent = '';
+            errorDiv.textContent = '';
+            const fileInput = document.getElementById('pdf-file');
+            if (!fileInput.files.length) {
+                errorDiv.textContent = 'Please select a PDF file.';
+                return;
+            }
+            const formData = new FormData();
+            formData.append('pdf', fileInput.files[0]);
+            try {
+                const res = await fetch('http://127.0.0.1:5000/upload', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (res.ok) {
+                    statusDiv.textContent = data.message || 'PDF uploaded successfully!';
+                    chatDiv.innerHTML += `<div><b>System:</b> ${data.message}</div>`;
+                } else {
+                    errorDiv.textContent = data.error || 'Upload failed.';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Could not connect to backend.';
+            }
+        };
+    
+        window.sendMessage = async function() {
+            statusDiv.textContent = '';
+            errorDiv.textContent = '';
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            if (!message) return;
+            chatDiv.innerHTML += `<div><b>You:</b> ${message}</div>`;
+            input.value = '';
+            try {
+                const res = await fetch('http://127.0.0.1:5000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+                chatDiv.innerHTML += `<div><b>Bot:</b> ${data.response}</div>`;
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            } catch (err) {
+                errorDiv.textContent = 'Could not connect to backend.';
+            }
+        }
+    })();
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        #chat { border: 1px solid #ccc; padding: 1em; height: 300px; overflow-y: auto; }
+        #user-input { width: 80%; }
+    </style>
+</head>
+<body>
+    <h2>PDF Chatbot</h2>
+    <form id="upload-form">
+        <input type="file" id="pdf-file" accept="application/pdf" required>
+        <button type="submit">Upload PDF</button>
+    </form>
+    <div id="chat"></div>
+    <input type="text" id="user-input" placeholder="Ask something about the PDF...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const chatDiv = document.getElementById('chat');
+        document.getElementById('upload-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('pdf-file');
+            const formData = new FormData();
+            formData.append('pdf', fileInput.files[0]);
+            const res = await fetch('http://127.0.0.1:5000/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            chatDiv.innerHTML += `<div><b>System:</b> ${data.message || data.error}</div>`;
+        };
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value;
+            chatDiv.innerHTML += `<div><b>You:</b> ${message}</div>`;
+            input.value = '';
+            const res = await fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await res.json();
+            chatDiv.innerHTML += `<div><b>Bot:</b> ${data.response}</div>`;
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
